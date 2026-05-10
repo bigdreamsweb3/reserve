@@ -15,7 +15,7 @@ export function ReserveCard({ listing }: { listing: ReserveListing }) {
   const isUnavailable = listing.status === "unavailable";
   const isStay = listing.type === "apartment";
   const detailHref = `/reserves/${listing.slug}`;
-  const primaryHref = isStay ? `${detailHref}#book` : `${detailHref}#order`;
+  const primaryHref = (isStay ? `${detailHref}#book` : `${detailHref}#order`) as any;
 
   return (
     <article
