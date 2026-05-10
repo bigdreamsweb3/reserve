@@ -5,6 +5,7 @@ import { getSessionUser } from "@/lib/auth";
 import { MobileMenu } from "@/components/mobile-menu";
 import { navLinks } from "@/lib/content";
 import { LogoutButton } from "@/components/logout-button";
+import { MealCartNav } from "@/components/meal-cart-nav";
 
 export async function SiteHeader({ availableMealCount }: { availableMealCount?: number } = {}) {
   const user = await getSessionUser();
@@ -41,7 +42,7 @@ export async function SiteHeader({ availableMealCount }: { availableMealCount?: 
         </nav>
 
         <div className="flex items-center gap-3">
-
+          <MealCartNav />
 
           <MobileMenu
             navLinks={navLinks}

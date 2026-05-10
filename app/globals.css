@@ -999,3 +999,55 @@ a {
     transform: none;
   }
 }
+
+/* ── Listing / lifestyle cards: layout tokens only (brand vars) ── */
+.listing-card-stay {
+  border-left: 4px solid var(--reserve-green-800);
+  box-shadow: 0 22px 56px rgba(41, 82, 39, 0.09);
+}
+
+.listing-card-meal {
+  border-top: 3px solid var(--reserve-gold-500);
+  box-shadow: 0 22px 56px rgba(70, 26, 15, 0.07);
+}
+
+.listing-card-media-stay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 55%, rgba(41, 82, 39, 0.12) 100%);
+}
+
+.listing-card-media-meal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 50%, rgba(109, 63, 34, 0.1) 100%);
+}
+
+.quick-action-tile {
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background: var(--reserve-cream-100);
+  box-shadow: 0 16px 40px rgba(30, 22, 14, 0.06);
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.quick-action-tile:hover {
+  border-color: rgba(41, 82, 39, 0.22);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.booking-step-label {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--reserve-gold-400);
+}

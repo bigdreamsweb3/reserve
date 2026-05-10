@@ -66,18 +66,19 @@ export function BookingSuite() {
   const [isNewsletterPending, startNewsletterTransition] = useTransition();
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+    <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
       <section className="panel rounded-[2rem] p-6 sm:p-8">
-        <p className="eyebrow">Reservations</p>
+        <p className="eyebrow">Reservations & services</p>
         <h3 className="mt-3 font-[family-name:var(--font-heading)] text-3xl text-white">
-          Book an apartment or reserve a meal
+          Tell us what you are planning
         </h3>
-        <p className="mt-3 max-w-xl text-sm leading-7 text-[var(--muted)]">
-          Send a request for an apartment stay, table reservation, meal order, or custom hospitality plan inside Reserve. Reservation requests are stored in Neon once your database is connected.
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-[var(--muted)]">
+          Apartment holds, table times, meal deliveries, and bespoke requests all start here. Complete each block in
+          order — it helps the team respond faster with accurate options.
         </p>
 
         <form
-          className="mt-8 grid gap-4 sm:grid-cols-2"
+          className="mt-8 space-y-10"
           onSubmit={(event) => {
             event.preventDefault();
             setReservationMessage("");
@@ -98,79 +99,100 @@ export function BookingSuite() {
             });
           }}
         >
-          <input
-            required
-            value={reservation.guestName}
-            onChange={(event) =>
-              setReservation((current) => ({ ...current, guestName: event.target.value }))
-            }
-            placeholder="Guest name"
-            className="brand-input rounded-2xl px-4 py-3 text-sm outline-none"
-          />
-          <input
-            required
-            type="email"
-            value={reservation.email}
-            onChange={(event) =>
-              setReservation((current) => ({ ...current, email: event.target.value }))
-            }
-            placeholder="Email address"
-            className="brand-input rounded-2xl px-4 py-3 text-sm outline-none"
-          />
-          <input
-            required
-            value={reservation.phone}
-            onChange={(event) =>
-              setReservation((current) => ({ ...current, phone: event.target.value }))
-            }
-            placeholder="Phone number"
-            className="brand-input rounded-2xl px-4 py-3 text-sm outline-none"
-          />
-          <input
-            required
-            min="1"
-            max="20"
-            type="number"
-            value={reservation.guestCount}
-            onChange={(event) =>
-              setReservation((current) => ({ ...current, guestCount: event.target.value }))
-            }
-            placeholder="Guests or seats"
-            className="brand-input rounded-2xl px-4 py-3 text-sm outline-none"
-          />
-          <input
-            required
-            type="datetime-local"
-            value={reservation.reservationDate}
-            onChange={(event) =>
-              setReservation((current) => ({ ...current, reservationDate: event.target.value }))
-            }
-            className="brand-input rounded-2xl px-4 py-3 text-sm outline-none sm:col-span-2"
-          />
-          <input
-            value={reservation.occasion}
-            onChange={(event) =>
-              setReservation((current) => ({ ...current, occasion: event.target.value }))
-            }
-            placeholder="Apartment stay, lunch, dinner, birthday..."
-            className="brand-input rounded-2xl px-4 py-3 text-sm outline-none sm:col-span-2"
-          />
-          <textarea
-            value={reservation.notes}
-            onChange={(event) =>
-              setReservation((current) => ({ ...current, notes: event.target.value }))
-            }
-            placeholder="Tell Reserve what you need"
-            rows={5}
-            className="brand-input rounded-2xl px-4 py-3 text-sm outline-none sm:col-span-2"
-          />
-          <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-4 border-b border-[var(--line)] pb-8">
+            <p className="booking-step-label">Step 1 · Who we are welcoming</p>
+            <p className="text-sm text-[var(--muted)]">Primary guest and best contact for follow-up.</p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <input
+                required
+                value={reservation.guestName}
+                onChange={(event) =>
+                  setReservation((current) => ({ ...current, guestName: event.target.value }))
+                }
+                placeholder="Guest name"
+                className="brand-input rounded-2xl px-4 py-3 text-sm outline-none"
+              />
+              <input
+                required
+                type="email"
+                value={reservation.email}
+                onChange={(event) =>
+                  setReservation((current) => ({ ...current, email: event.target.value }))
+                }
+                placeholder="Email address"
+                className="brand-input rounded-2xl px-4 py-3 text-sm outline-none"
+              />
+              <input
+                required
+                value={reservation.phone}
+                onChange={(event) =>
+                  setReservation((current) => ({ ...current, phone: event.target.value }))
+                }
+                placeholder="Phone (WhatsApp preferred)"
+                className="brand-input rounded-2xl px-4 py-3 text-sm outline-none sm:col-span-2"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-4 border-b border-[var(--line)] pb-8">
+            <p className="booking-step-label">Step 2 · Timing & party size</p>
+            <p className="text-sm text-[var(--muted)]">Even approximate timing helps us check kitchens and housekeeping.</p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <input
+                required
+                min="1"
+                max="20"
+                type="number"
+                value={reservation.guestCount}
+                onChange={(event) =>
+                  setReservation((current) => ({ ...current, guestCount: event.target.value }))
+                }
+                placeholder="Guests or seats"
+                className="brand-input rounded-2xl px-4 py-3 text-sm outline-none"
+              />
+              <input
+                required
+                type="datetime-local"
+                value={reservation.reservationDate}
+                onChange={(event) =>
+                  setReservation((current) => ({ ...current, reservationDate: event.target.value }))
+                }
+                className="brand-input rounded-2xl px-4 py-3 text-sm outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <p className="booking-step-label">Step 3 · Request type & notes</p>
+            <p className="text-sm text-[var(--muted)]">
+              Mention stays, in-room dining, celebrations, or delivery preferences in your own words.
+            </p>
+            <input
+              value={reservation.occasion}
+              onChange={(event) =>
+                setReservation((current) => ({ ...current, occasion: event.target.value }))
+              }
+              placeholder="e.g. Apartment weekend · Business lunch · Family dinner delivery"
+              className="brand-input w-full rounded-2xl px-4 py-3 text-sm outline-none"
+            />
+            <textarea
+              value={reservation.notes}
+              onChange={(event) =>
+                setReservation((current) => ({ ...current, notes: event.target.value }))
+              }
+              placeholder="Anything else the concierge should know"
+              rows={5}
+              className="brand-input w-full rounded-2xl px-4 py-3 text-sm outline-none"
+            />
+          </div>
+
+          <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
             <button
               type="submit"
               disabled={isReservationPending}
-              className="accent-button rounded-full px-5 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-70"
+              className="accent-button rounded-full px-6 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {isReservationPending ? "Sending..." : "Send request"}
+              {isReservationPending ? "Sending..." : "Send request to Reserve"}
             </button>
             <p className="text-sm text-[var(--muted)]">{reservationMessage}</p>
           </div>
@@ -179,10 +201,13 @@ export function BookingSuite() {
 
       <div className="grid gap-6">
         <section className="panel rounded-[2rem] p-6 sm:p-8">
-          <p className="eyebrow">Contact Reserve</p>
+          <p className="eyebrow">Direct message</p>
           <h3 className="mt-3 font-[family-name:var(--font-heading)] text-3xl text-white">
-            Talk to the team
+            Prefer email first?
           </h3>
+          <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
+            Use this for partnerships, press, or questions that do not fit the reservation form.
+          </p>
           <form
             className="mt-6 grid gap-4"
             onSubmit={(event) => {
@@ -237,7 +262,7 @@ export function BookingSuite() {
               onChange={(event) =>
                 setContact((current) => ({ ...current, message: event.target.value }))
               }
-              placeholder="Tell us if you need an apartment, meal order, or dining arrangement"
+              placeholder="Your message"
               className="brand-input rounded-2xl px-4 py-3 text-sm outline-none"
             />
             <button
@@ -252,12 +277,12 @@ export function BookingSuite() {
         </section>
 
         <section className="panel rounded-[2rem] p-6 sm:p-8">
-          <p className="eyebrow">The List</p>
+          <p className="eyebrow">Guest list</p>
           <h3 className="mt-3 font-[family-name:var(--font-heading)] text-3xl text-white">
-            Join the guestbook
+            Occasional updates
           </h3>
-          <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
-            Get apartment updates, menu drops, and special Reserve announcements.
+          <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
+            Apartment availability, menu features, and Reserve happenings — opt in anytime.
           </p>
           <form
             className="mt-6 flex flex-col gap-4 sm:flex-row"

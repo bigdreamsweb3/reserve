@@ -81,6 +81,13 @@ export default async function DashboardPage() {
                         <p className="mt-1 text-sm text-[var(--ink-soft)]">
                           {booking.listingType} • {new Date(booking.startDate).toLocaleString()}
                         </p>
+                        {booking.mealOrderPayload ? (
+                          <p className="mt-2 text-xs text-[var(--ink-soft)]">
+                            Meal cart · {booking.mealOrderPayload.items.length} line
+                            {booking.mealOrderPayload.items.length === 1 ? "" : "s"} ·{" "}
+                            {formatNaira(booking.mealOrderPayload.subtotalNgn)}
+                          </p>
+                        ) : null}
                       </div>
                       <span className="surface-pill rounded-full px-3 py-1 text-xs capitalize">
                         {booking.status}

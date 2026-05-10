@@ -25,6 +25,9 @@ const listings = [
     imageTone: "dish-tone-herb",
     imageUrl: null,
     amenities: ["Full kitchen", "Housekeeping", "24/7 power", "Parking"],
+    mealCategory: null,
+    galleryUrls: [],
+    mealAddons: [],
   },
   {
     slug: "courtyard-two-bedroom",
@@ -42,6 +45,9 @@ const listings = [
     imageTone: "dish-tone-smoke",
     imageUrl: null,
     amenities: ["Two bedrooms", "Dining area", "Laundry access", "Fast Wi-Fi"],
+    mealCategory: null,
+    galleryUrls: [],
+    mealAddons: [],
   },
   {
     slug: "reserve-fried-rice",
@@ -59,6 +65,13 @@ const listings = [
     imageTone: "dish-tone-fire",
     imageUrl: null,
     amenities: ["Chicken option", "Plantain add-on", "Restaurant pickup", "Freshly prepared"],
+    mealCategory: "rice-dishes",
+    galleryUrls: [],
+    mealAddons: [
+      { label: "Extra pepper", priceNgn: 0 },
+      { label: "Full chicken plate", priceNgn: 3500 },
+      { label: "Extra soya sauce", priceNgn: 500 },
+    ],
   },
   {
     slug: "reserve-special-indomie",
@@ -76,6 +89,12 @@ const listings = [
     imageTone: "dish-tone-citrus",
     imageUrl: null,
     amenities: ["Egg option", "Chicken option", "Quick prep", "Pickup available"],
+    mealCategory: "noodles-pasta",
+    galleryUrls: [],
+    mealAddons: [
+      { label: "Extra egg", priceNgn: 400 },
+      { label: "Extra chicken", priceNgn: 1200 },
+    ],
   },
   {
     slug: "reserve-egusi-soup",
@@ -93,6 +112,12 @@ const listings = [
     imageTone: "dish-tone-board",
     imageUrl: null,
     amenities: ["Swallow options", "Protein add-on", "Freshly made", "Restaurant service"],
+    mealCategory: "soups-stews",
+    galleryUrls: [],
+    mealAddons: [
+      { label: "Extra assorted meat", priceNgn: 2500 },
+      { label: "Extra swallow", priceNgn: 800 },
+    ],
   },
   {
     slug: "reserve-coke",
@@ -110,6 +135,9 @@ const listings = [
     imageTone: "dish-tone-night",
     imageUrl: null,
     amenities: ["Cold serve", "Pairs with meals", "Pickup available", "Dine-in ready"],
+    mealCategory: "drinks",
+    galleryUrls: [],
+    mealAddons: [],
   },
 ];
 
@@ -133,11 +161,12 @@ try {
       `
       INSERT INTO reserve_listings (
         slug, title, type, location, short_description, description, price_ngn,
-        billing_period, capacity, status, featured, image_tone, image_url, amenities, updated_at
+        billing_period, capacity, status, featured, image_tone, image_url, amenities,
+        meal_category, gallery_urls, meal_addons, updated_at
       )
       VALUES (
         $1,$2,$3,$4,$5,$6,$7,
-        $8,$9,$10,$11,$12,$13,$14,NOW()
+        $8,$9,$10,$11,$12,$13,$14,$15,$16,$17,NOW()
       )
       ON CONFLICT (slug) DO UPDATE SET
         title = EXCLUDED.title,
@@ -153,6 +182,9 @@ try {
         image_tone = EXCLUDED.image_tone,
         image_url = EXCLUDED.image_url,
         amenities = EXCLUDED.amenities,
+        meal_category = EXCLUDED.meal_category,
+        gallery_urls = EXCLUDED.gallery_urls,
+        meal_addons = EXCLUDED.meal_addons,
         updated_at = NOW()
       `,
       [
@@ -170,6 +202,9 @@ try {
         listing.imageTone,
         listing.imageUrl,
         listing.amenities,
+        listing.mealCategory,
+        listing.galleryUrls,
+        JSON.stringify(listing.mealAddons),
       ],
     );
   }

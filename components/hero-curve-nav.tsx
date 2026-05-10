@@ -1,20 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import { Home, House, Phone, Utensils } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { House, Phone, ShoppingBag, Utensils } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type NavItem = {
   label: string;
   href: string;
-  icon: typeof Home;
+  icon: LucideIcon;
 };
 
 const navItems: NavItem[] = [
-  // { label: "Home", href: "#home", icon: Home },
-  { label: "Apartments", href: "/apartments", icon: House },
-  { label: "Meals", href: "/meals", icon: Utensils },
-  { label: "Contact", href: "#reserve", icon: Phone },
+  { label: "Stays", href: "/apartments", icon: House },
+  { label: "Menu", href: "/meals", icon: Utensils },
+  { label: "Cart", href: "/cart", icon: ShoppingBag },
+  { label: "Concierge", href: "#reserve", icon: Phone },
 ];
 
 export function HeroCurveNav() {

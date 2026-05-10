@@ -1,7 +1,8 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { ListingBookingForm } from "@/components/listing-booking-form";
+import { ListingImageGallery } from "@/components/listing-image-gallery";
+import { MealOrderSection } from "@/components/meal-order-section";
 import { SiteHeader } from "@/components/site-header";
 import { formatNaira, getReserveListingBySlug } from "@/lib/reserves";
 
@@ -69,21 +70,31 @@ export default async function ReserveDetailPage({
             </div>
 
             <div className="grid gap-6">
-              <div className="relative h-[420px] overflow-hidden rounded-[2rem]">
-                {listing.imageUrl ? (
-                  <Image src={listing.imageUrl} alt={listing.title} fill sizes="(max-width: 768px) 100vw, 60vw" className="object-cover" />
-                ) : (
-                  <div className={`h-full w-full ${listing.imageTone}`} />
-                )}
-              </div>
-              {canSubmitOrder ? (
+              {listing.type === "apartment" ? (
+                <ListingImageGallery
+                  title={listing.title}
+                  primaryImageUrl={listing.imageUrl}
+                  galleryUrls={listing.galleryUrls}
+                  imageTone={listing.imageTone}
+                />
+              ) : (
+                <ListingImageGallery
+                  title={listing.title}
+                  primaryImageUrl={listing.imageUrl}
+                  galleryUrls={[]}
+                  imageTone={listing.imageTone}
+                />
+              )}
+              {canSubmitOrder && listing.type === "apartment" ? (
                 <ListingBookingForm
                   listingId={listing.id}
                   listingTitle={listing.title}
                   listingType={listing.type}
                   defaultGuests={Math.min(listing.capacity, 2)}
                 />
-              ) : (
+              ) : null}
+              {canSubmitOrder && listing.type === "meal" ? <MealOrderSection listing={listing} canOrder /> : null}
+              {!canSubmitOrder ? (
                 <div className="panel rounded-[2rem] p-6 sm:p-8">
                   <p className="eyebrow">Not Available</p>
                   <h3 className="mt-3 font-[family-name:var(--font-heading)] text-3xl text-white">
@@ -93,7 +104,7 @@ export default async function ReserveDetailPage({
                     The Reserve team has marked this {listing.type} as unavailable for now. Please check back later or contact the team for alternatives.
                   </p>
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
         </div>

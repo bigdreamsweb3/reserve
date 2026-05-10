@@ -54,6 +54,9 @@ CREATE TABLE IF NOT EXISTS reserve_listings (
   image_tone TEXT NOT NULL DEFAULT 'dish-tone-night',
   image_url TEXT,
   amenities TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+  meal_category TEXT,
+  gallery_urls TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+  meal_addons JSONB NOT NULL DEFAULT '[]'::jsonb,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -70,6 +73,7 @@ CREATE TABLE IF NOT EXISTS reserve_bookings (
   end_date TIMESTAMPTZ,
   notes TEXT DEFAULT '',
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'cancelled', 'completed')),
+  meal_order_payload JSONB,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 

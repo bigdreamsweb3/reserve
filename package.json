@@ -9,7 +9,10 @@
     "start": "next start",
     "lint": "eslint .",
     "db:setup": "node --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/setup-db.mjs",
-    "db:seed": "node --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/seed-db.mjs"
+    "db:seed": "node --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/seed-db.mjs",
+    "// Git Commands": "--------------------Git Commands-------------------",
+    "git-commit-push": "git diff-index --quiet HEAD || (git add . && git commit -m \"Something just got updated!\" --allow-empty && git push origin main)",
+    "git-commit-push-force": "git add . && git commit -m \"Something just got updated!\" --no-verify --allow-empty && git push origin main --force"
   },
   "keywords": [
     "nextjs",

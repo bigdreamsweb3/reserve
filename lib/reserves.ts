@@ -2,6 +2,27 @@ import { getSql, hasDatabaseUrl } from "@/lib/db";
 
 export type ReserveType = "apartment" | "meal";
 
+export type MealAddon = {
+  id?: string;
+  label: string;
+  priceNgn: number;
+};
+
+export type MealOrderLinePayload = {
+  listingId: string;
+  title: string;
+  slug: string;
+  quantity: number;
+  unitPriceNgn: number;
+  addons: { label: string; priceNgn: number }[];
+  lineTotalNgn: number;
+};
+
+export type MealOrderPayload = {
+  items: MealOrderLinePayload[];
+  subtotalNgn: number;
+};
+
 export type ReserveListing = {
   id: string;
   slug: string;
@@ -18,6 +39,9 @@ export type ReserveListing = {
   imageTone: string;
   imageUrl: string | null;
   amenities: string[];
+  mealCategory: string | null;
+  galleryUrls: string[];
+  mealAddons: MealAddon[];
 };
 
 export type ReserveBooking = {
@@ -34,6 +58,7 @@ export type ReserveBooking = {
   createdAt: string;
   listingTitle: string;
   listingType: ReserveType;
+  mealOrderPayload: MealOrderPayload | null;
 };
 
 export const sampleListings: ReserveListing[] = [
@@ -54,6 +79,9 @@ export const sampleListings: ReserveListing[] = [
     imageTone: "dish-tone-herb",
     imageUrl: null,
     amenities: ["Full kitchen", "Housekeeping", "24/7 power", "Parking"],
+    mealCategory: null,
+    galleryUrls: [],
+    mealAddons: [],
   },
   {
     id: "sample-apartment-courtyard",
@@ -72,6 +100,9 @@ export const sampleListings: ReserveListing[] = [
     imageTone: "dish-tone-smoke",
     imageUrl: null,
     amenities: ["Two bedrooms", "Dining area", "Fast Wi-Fi", "Laundry access"],
+    mealCategory: null,
+    galleryUrls: [],
+    mealAddons: [],
   },
   {
     id: "sample-meal-fried-rice",
@@ -90,6 +121,13 @@ export const sampleListings: ReserveListing[] = [
     imageTone: "dish-tone-fire",
     imageUrl: null,
     amenities: ["Chicken option", "Plantain add-on", "Restaurant pickup", "Freshly prepared"],
+    mealCategory: "rice-dishes",
+    galleryUrls: [],
+    mealAddons: [
+      { id: "extra-pepper", label: "Extra pepper", priceNgn: 0 },
+      { id: "full-chicken", label: "Full chicken plate", priceNgn: 3500 },
+      { id: "extra-soya", label: "Extra soya sauce", priceNgn: 500 },
+    ],
   },
   {
     id: "sample-meal-indomie",
@@ -108,6 +146,12 @@ export const sampleListings: ReserveListing[] = [
     imageTone: "dish-tone-citrus",
     imageUrl: null,
     amenities: ["Egg option", "Chicken option", "Quick prep", "Pickup available"],
+    mealCategory: "noodles-pasta",
+    galleryUrls: [],
+    mealAddons: [
+      { id: "extra-egg", label: "Extra egg", priceNgn: 400 },
+      { id: "extra-chicken", label: "Extra chicken", priceNgn: 1200 },
+    ],
   },
   {
     id: "sample-meal-egusi",
@@ -126,6 +170,12 @@ export const sampleListings: ReserveListing[] = [
     imageTone: "dish-tone-board",
     imageUrl: null,
     amenities: ["Swallow options", "Protein add-on", "Freshly made", "Restaurant service"],
+    mealCategory: "soups-stews",
+    galleryUrls: [],
+    mealAddons: [
+      { id: "extra-meat", label: "Extra assorted meat", priceNgn: 2500 },
+      { id: "extra-swallow", label: "Extra swallow", priceNgn: 800 },
+    ],
   },
   {
     id: "sample-meal-coke",
@@ -144,6 +194,9 @@ export const sampleListings: ReserveListing[] = [
     imageTone: "dish-tone-night",
     imageUrl: null,
     amenities: ["Cold serve", "Pairs with meals", "Pickup available", "Dine-in ready"],
+    mealCategory: "drinks",
+    galleryUrls: [],
+    mealAddons: [],
   },
 ];
 
@@ -155,7 +208,54 @@ export function formatNaira(value: number) {
   }).format(value);
 }
 
+function parseMealAddons(value: unknown): MealAddon[] {
+  if (value == null) {
+    return [];
+  }
+
+  if (Array.isArray(value)) {
+    return value as MealAddon[];
+  }
+
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value) as unknown;
+      return Array.isArray(parsed) ? (parsed as MealAddon[]) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  return [];
+}
+
+function parseMealOrderPayload(value: unknown): MealOrderPayload | null {
+  if (value == null) {
+    return null;
+  }
+
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value) as MealOrderPayload;
+      return parsed?.items ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+
+  if (typeof value === "object" && value !== null && "items" in value) {
+    return value as MealOrderPayload;
+  }
+
+  return null;
+}
+
 function mapListing(row: Record<string, unknown>): ReserveListing {
+  const galleryRaw = row.gallery_urls;
+  const galleryUrls = Array.isArray(galleryRaw)
+    ? (galleryRaw as string[]).filter(Boolean)
+    : [];
+
   return {
     id: String(row.id),
     slug: String(row.slug),
@@ -172,6 +272,9 @@ function mapListing(row: Record<string, unknown>): ReserveListing {
     imageTone: String(row.image_tone),
     imageUrl: row.image_url ? String(row.image_url) : null,
     amenities: Array.isArray(row.amenities) ? (row.amenities as string[]) : [],
+    mealCategory: row.meal_category != null && String(row.meal_category).trim() !== "" ? String(row.meal_category) : null,
+    galleryUrls,
+    mealAddons: parseMealAddons(row.meal_addons),
   };
 }
 
@@ -190,6 +293,7 @@ function mapBooking(row: Record<string, unknown>): ReserveBooking {
     createdAt: String(row.created_at),
     listingTitle: String(row.listing_title),
     listingType: row.listing_type as ReserveType,
+    mealOrderPayload: parseMealOrderPayload(row.meal_order_payload),
   };
 }
 
@@ -198,6 +302,14 @@ function isMissingRelationError(error: unknown) {
     error instanceof Error &&
     (error.message.includes('relation "reserve_listings" does not exist') ||
       error.message.includes('relation "reserve_bookings" does not exist'))
+  );
+}
+
+function isMissingColumnError(error: unknown) {
+  const code = typeof error === "object" && error !== null && "code" in error ? String((error as { code: unknown }).code) : "";
+  return (
+    code === "42703" ||
+    (error instanceof Error && error.message.includes("does not exist") && error.message.includes("column"))
   );
 }
 
@@ -228,7 +340,10 @@ export async function listReserveListings() {
         featured,
         image_tone,
         image_url,
-        amenities
+        amenities,
+        meal_category,
+        gallery_urls,
+        meal_addons
       FROM reserve_listings
       WHERE type IN ('apartment', 'meal')
       ORDER BY featured DESC, created_at DESC
@@ -236,7 +351,7 @@ export async function listReserveListings() {
 
     return rows.filter((row) => isSupportedType(row.type)).map((row) => mapListing(row));
   } catch (error) {
-    if (isMissingRelationError(error)) {
+    if (isMissingRelationError(error) || isMissingColumnError(error)) {
       return sampleListings;
     }
 
@@ -267,7 +382,10 @@ export async function getReserveListingBySlug(slug: string) {
         featured,
         image_tone,
         image_url,
-        amenities
+        amenities,
+        meal_category,
+        gallery_urls,
+        meal_addons
       FROM reserve_listings
       WHERE slug = ${slug}
         AND type IN ('apartment', 'meal')
@@ -276,7 +394,7 @@ export async function getReserveListingBySlug(slug: string) {
 
     return rows[0] ? mapListing(rows[0]) : null;
   } catch (error) {
-    if (isMissingRelationError(error)) {
+    if (isMissingRelationError(error) || isMissingColumnError(error)) {
       return sampleListings.find((listing) => listing.slug === slug) ?? null;
     }
 
@@ -307,7 +425,10 @@ export async function getReserveListingById(id: string) {
         featured,
         image_tone,
         image_url,
-        amenities
+        amenities,
+        meal_category,
+        gallery_urls,
+        meal_addons
       FROM reserve_listings
       WHERE id = ${id}
         AND type IN ('apartment', 'meal')
@@ -316,7 +437,7 @@ export async function getReserveListingById(id: string) {
 
     return rows[0] ? mapListing(rows[0]) : null;
   } catch (error) {
-    if (isMissingRelationError(error)) {
+    if (isMissingRelationError(error) || isMissingColumnError(error)) {
       return sampleListings.find((listing) => listing.id === id) ?? null;
     }
 
@@ -344,6 +465,7 @@ export async function listReserveBookings() {
         reserve_bookings.notes,
         reserve_bookings.status,
         reserve_bookings.created_at,
+        reserve_bookings.meal_order_payload,
         reserve_listings.title AS listing_title,
         reserve_listings.type AS listing_type
       FROM reserve_bookings
@@ -354,7 +476,7 @@ export async function listReserveBookings() {
 
     return rows.filter((row) => isSupportedType(row.listing_type)).map((row) => mapBooking(row));
   } catch (error) {
-    if (isMissingRelationError(error)) {
+    if (isMissingRelationError(error) || isMissingColumnError(error)) {
       return [] as ReserveBooking[];
     }
 
@@ -382,6 +504,7 @@ export async function listReserveBookingsForUser(userId: string) {
         reserve_bookings.notes,
         reserve_bookings.status,
         reserve_bookings.created_at,
+        reserve_bookings.meal_order_payload,
         reserve_listings.title AS listing_title,
         reserve_listings.type AS listing_type
       FROM reserve_bookings
@@ -393,7 +516,7 @@ export async function listReserveBookingsForUser(userId: string) {
 
     return rows.filter((row) => isSupportedType(row.listing_type)).map((row) => mapBooking(row));
   } catch (error) {
-    if (isMissingRelationError(error)) {
+    if (isMissingRelationError(error) || isMissingColumnError(error)) {
       return [] as ReserveBooking[];
     }
 

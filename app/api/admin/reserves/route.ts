@@ -38,7 +38,8 @@ export async function POST(request: Request) {
     listing.type === "meal" && listing.status !== "unavailable" ? "available" : listing.status;
   const sql = getSql();
 
-  const rows = await sql`
+  try {
+    const rows = await sql`
     INSERT INTO reserve_listings (
       slug,
       title,
@@ -54,6 +55,9 @@ export async function POST(request: Request) {
       image_tone,
       image_url,
       amenities,
+      meal_category,
+      gallery_urls,
+      meal_addons,
       updated_at
     ) VALUES (
       ${listing.slug},
@@ -70,10 +74,26 @@ export async function POST(request: Request) {
       ${listing.imageTone},
       ${listing.imageUrl},
       ${listing.amenities},
+      ${listing.mealCategory},
+      ${listing.galleryUrls},
+      ${JSON.stringify(listing.mealAddons)},
       NOW()
     )
     RETURNING id
   `;
 
-  return NextResponse.json({ ok: true, id: rows[0]?.id });
+    return NextResponse.json({ ok: true, id: rows[0]?.id });
+  } catch (error) {
+    const code = typeof error === "object" && error !== null && "code" in error ? String((error as { code: unknown }).code) : "";
+    if (code === "42703") {
+      return NextResponse.json(
+        {
+          message:
+            "Database is missing new columns. Run db/migration_reserve_enhancements.sql on your Neon database, then try again.",
+        },
+        { status: 503 },
+      );
+    }
+    throw error;
+  }
 }

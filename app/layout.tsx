@@ -3,6 +3,8 @@ import { Archivo, Cormorant_SC } from "next/font/google";
 
 import "./globals.css";
 
+import { CartProvider } from "@/components/cart-context";
+
 const archivo = Archivo({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -27,7 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${archivo.variable} ${cormorantSc.variable}`}>{children}</body>
+      <body className={`${archivo.variable} ${cormorantSc.variable}`}>
+        <CartProvider>{children}</CartProvider>
+      </body>
     </html>
   );
 }

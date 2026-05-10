@@ -32,7 +32,8 @@ export async function PATCH(
     listing.type === "meal" && listing.status !== "unavailable" ? "available" : listing.status;
   const sql = getSql();
 
-  await sql`
+  try {
+    await sql`
     UPDATE reserve_listings
     SET
       slug = ${listing.slug},
@@ -49,11 +50,27 @@ export async function PATCH(
       image_tone = ${listing.imageTone},
       image_url = ${listing.imageUrl},
       amenities = ${listing.amenities},
+      meal_category = ${listing.mealCategory},
+      gallery_urls = ${listing.galleryUrls},
+      meal_addons = ${JSON.stringify(listing.mealAddons)},
       updated_at = NOW()
     WHERE id = ${id}
   `;
 
-  return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    const code = typeof error === "object" && error !== null && "code" in error ? String((error as { code: unknown }).code) : "";
+    if (code === "42703") {
+      return NextResponse.json(
+        {
+          message:
+            "Database is missing new columns. Run db/migration_reserve_enhancements.sql on your Neon database, then try again.",
+        },
+        { status: 503 },
+      );
+    }
+    throw error;
+  }
 }
 
 export async function DELETE(

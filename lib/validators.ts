@@ -32,6 +32,12 @@ export const loginSchema = z.object({
   password: z.string().min(8).max(120),
 });
 
+const mealAddonFieldSchema = z.object({
+  id: z.string().min(1).max(80).optional(),
+  label: z.string().min(1).max(120),
+  priceNgn: z.coerce.number().int().min(0),
+});
+
 export const reserveListingSchema = z.object({
   slug: z.string().min(3).max(120),
   title: z.string().min(3).max(160),
@@ -47,6 +53,12 @@ export const reserveListingSchema = z.object({
   imageTone: z.string().min(3).max(80),
   imageUrl: z.union([z.string().max(500), z.literal(""), z.null()]).optional().transform((value) => value || null),
   amenities: z.array(z.string().min(1).max(80)).min(1).max(12),
+  mealCategory: z
+    .union([z.string().min(1).max(80), z.literal(""), z.null()])
+    .optional()
+    .transform((value) => (value === "" || value == null ? null : value)),
+  galleryUrls: z.array(z.string().min(1).max(500)).max(16).optional().default([]),
+  mealAddons: z.array(mealAddonFieldSchema).max(24).optional().default([]),
 });
 
 export const reserveBookingSchema = z.object({
@@ -66,6 +78,36 @@ export const reserveBookingSchema = z.object({
   notes: z.string().max(600).optional().default(""),
 });
 
+const mealOrderAddonSchema = z.object({
+  label: z.string().min(1).max(120),
+  priceNgn: z.coerce.number().int().min(0),
+});
+
+export const mealOrderRequestSchema = z.object({
+  fullName: z.string().min(2).max(120),
+  email: z.email(),
+  phone: z.string().min(7).max(30),
+  startDate: z.iso.datetime(),
+  endDate: z.union([z.iso.datetime(), z.literal(""), z.null()]).optional().transform((value) => {
+    if (!value) {
+      return null;
+    }
+
+    return value;
+  }),
+  notes: z.string().max(800).optional().default(""),
+  items: z
+    .array(
+      z.object({
+        listingId: z.string().min(2),
+        quantity: z.coerce.number().int().min(1).max(40),
+        addonSelections: z.array(mealOrderAddonSchema).max(30).optional().default([]),
+      }),
+    )
+    .min(1)
+    .max(50),
+});
+
 export const bookingStatusSchema = z.object({
   status: z.enum(["pending", "confirmed", "cancelled", "completed"]),
 });
@@ -75,5 +117,6 @@ export type ContactInput = z.infer<typeof contactSchema>;
 export type NewsletterInput = z.infer<typeof newsletterSchema>;
 export type ReserveListingInput = z.infer<typeof reserveListingSchema>;
 export type ReserveBookingInput = z.infer<typeof reserveBookingSchema>;
+export type MealOrderRequestInput = z.infer<typeof mealOrderRequestSchema>;
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
