@@ -14,19 +14,17 @@ import {
 export function ReserveCard({ listing }: { listing: ReserveListing }) {
   const isUnavailable = listing.status === "unavailable";
   const isStay = listing.type === "apartment";
-  const detailHref = `/reserves/${listing.slug}`;
+  const detailHref = `/reserves/${listing.slug}` as any;
   const primaryHref = (isStay ? `${detailHref}#book` : `${detailHref}#order`) as any;
 
   return (
     <article
-      className={`group overflow-hidden rounded-[1.9rem] border border-black/5 bg-[var(--reserve-cream-100)] transition duration-300 hover:-translate-y-0.5 ${
-        isStay ? "listing-card-stay" : "listing-card-meal"
-      }`}
+      className={`group overflow-hidden rounded-[1.9rem] border border-black/5 bg-[var(--reserve-cream-100)] transition duration-300 hover:-translate-y-0.5 ${isStay ? "listing-card-stay" : "listing-card-meal"
+        }`}
     >
       <div
-        className={`relative h-60 overflow-hidden bg-[var(--reserve-cream-200)] ${
-          isStay ? "listing-card-media-stay" : "listing-card-media-meal"
-        }`}
+        className={`relative h-60 overflow-hidden bg-[var(--reserve-cream-200)] ${isStay ? "listing-card-media-stay" : "listing-card-media-meal"
+          }`}
       >
         {listing.imageUrl ? (
           <Image
@@ -41,11 +39,10 @@ export function ReserveCard({ listing }: { listing: ReserveListing }) {
         )}
         <div className="absolute left-4 top-4 flex flex-wrap items-center gap-2">
           <span
-            className={`rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${
-              isStay
+            className={`rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${isStay
                 ? "bg-[var(--reserve-green-800)] text-[var(--reserve-cream-100)]"
                 : "bg-[var(--reserve-brown-700)] text-[var(--reserve-cream-100)]"
-            }`}
+              }`}
           >
             {isStay ? "Stay" : "Menu"}
           </span>
@@ -108,11 +105,10 @@ export function ReserveCard({ listing }: { listing: ReserveListing }) {
               <>
                 <Link
                   href={primaryHref}
-                  className={`interactive-button inline-flex flex-1 items-center justify-center rounded-full px-4 py-2.5 text-center text-sm font-semibold transition ${
-                    isStay
+                  className={`interactive-button inline-flex flex-1 items-center justify-center rounded-full px-4 py-2.5 text-center text-sm font-semibold transition ${isStay
                       ? "bg-[var(--reserve-green-800)] text-white hover:bg-[var(--reserve-green-700)]"
                       : "bg-[var(--reserve-gold-500)] text-[var(--reserve-green-950)] hover:bg-[var(--reserve-gold-400)]"
-                  }`}
+                    }`}
                 >
                   {isStay ? "Book this stay" : "Order now"}
                 </Link>

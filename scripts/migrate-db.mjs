@@ -9,7 +9,11 @@ if (!databaseUrl) {
   process.exit(1);
 }
 
-const migrationPath = resolve(process.cwd(), "db", "migration_reserve_enhancements.sql");
+const migrationPath = resolve(
+  process.cwd(),
+  "db",
+  "migration_reserve_enhancements.sql",
+);
 const sql = await readFile(migrationPath, "utf8");
 const pool = new Pool({ connectionString: databaseUrl });
 
