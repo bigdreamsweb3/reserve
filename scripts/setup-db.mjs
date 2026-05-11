@@ -11,12 +11,17 @@ if (!databaseUrl) {
 }
 
 const schemaPath = resolve(process.cwd(), "db", "schema.sql");
-const sql = await readFile(schemaPath, "utf8");
+const migrationPath = resolve(process.cwd(), "db", "migration_reserve_enhancements.sql");
+const schemaSql = await readFile(schemaPath, "utf8");
+const migrationSql = await readFile(migrationPath, "utf8");
 const pool = new Pool({ connectionString: databaseUrl });
 
 try {
-  await pool.query(sql);
+  await pool.query(schemaSql);
   console.log("Database schema applied successfully.");
+  
+  await pool.query(migrationSql);
+  console.log("Database migrations applied successfully.");
 } finally {
   await pool.end();
 }
