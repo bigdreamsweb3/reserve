@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, Clock3, House, ShoppingBag } from "lucide-react";
 
-import { mealCategoryLabel } from "@/lib/meal-categories";
+import { mealCategoryLabel, mealPackageLabel } from "@/lib/meal-categories";
 import { formatNaira, type ReserveListing } from "@/lib/reserves";
 import {
   getAvailabilityClass,
@@ -59,6 +59,7 @@ export function ReserveCard({ listing }: { listing: ReserveListing }) {
           {!isStay && listing.mealCategory ? (
             <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--reserve-brown-600)]">
               {mealCategoryLabel(listing.mealCategory)}
+              {listing.mealPackage ? ` / ${mealPackageLabel(listing.mealPackage)}` : ""}
             </p>
           ) : null}
           <h3 className="font-[family-name:var(--font-heading)] text-xl font-semibold text-[var(--ink)]">

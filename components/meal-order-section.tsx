@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { useMealCart } from "@/components/cart-context";
 import type { MealAddon, ReserveListing } from "@/lib/reserves";
 import { formatNaira } from "@/lib/reserves";
-import { mealCategoryLabel } from "@/lib/meal-categories";
+import { mealCategoryLabel, mealPackageLabel } from "@/lib/meal-categories";
 
 type MealOrderSectionProps = {
   listing: ReserveListing;
@@ -42,6 +42,12 @@ export function MealOrderSection({ listing, canOrder }: MealOrderSectionProps) {
           <>
             {" "}
             Category: <span className="text-[var(--brand-soft)]">{mealCategoryLabel(listing.mealCategory)}</span>
+          </>
+        ) : null}
+        {listing.mealPackage ? (
+          <>
+            {" "}
+            Package: <span className="text-[var(--brand-soft)]">{mealPackageLabel(listing.mealPackage)}</span>
           </>
         ) : null}
       </p>

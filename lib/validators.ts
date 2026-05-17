@@ -57,6 +57,10 @@ export const reserveListingSchema = z.object({
     .union([z.string().min(1).max(80), z.literal(""), z.null()])
     .optional()
     .transform((value) => (value === "" || value == null ? null : value)),
+  mealPackage: z
+    .union([z.string().min(1).max(80), z.literal(""), z.null()])
+    .optional()
+    .transform((value) => (value === "" || value == null ? null : value)),
   galleryUrls: z.array(z.string().min(1).max(500)).max(16).optional().default([]),
   mealAddons: z.array(mealAddonFieldSchema).max(24).optional().default([]),
 });

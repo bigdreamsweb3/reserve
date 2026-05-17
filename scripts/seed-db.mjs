@@ -26,6 +26,7 @@ const listings = [
     imageUrl: null,
     amenities: ["Full kitchen", "Housekeeping", "24/7 power", "Parking"],
     mealCategory: null,
+    mealPackage: null,
     galleryUrls: [],
     mealAddons: [],
   },
@@ -46,6 +47,7 @@ const listings = [
     imageUrl: null,
     amenities: ["Two bedrooms", "Dining area", "Laundry access", "Fast Wi-Fi"],
     mealCategory: null,
+    mealPackage: null,
     galleryUrls: [],
     mealAddons: [],
   },
@@ -66,6 +68,7 @@ const listings = [
     imageUrl: null,
     amenities: ["Chicken option", "Plantain add-on", "Restaurant pickup", "Freshly prepared"],
     mealCategory: "rice-dishes",
+    mealPackage: "standard",
     galleryUrls: [],
     mealAddons: [
       { label: "Extra pepper", priceNgn: 0 },
@@ -90,6 +93,7 @@ const listings = [
     imageUrl: null,
     amenities: ["Egg option", "Chicken option", "Quick prep", "Pickup available"],
     mealCategory: "noodles-pasta",
+    mealPackage: "flexi",
     galleryUrls: [],
     mealAddons: [
       { label: "Extra egg", priceNgn: 400 },
@@ -113,6 +117,7 @@ const listings = [
     imageUrl: null,
     amenities: ["Swallow options", "Protein add-on", "Freshly made", "Restaurant service"],
     mealCategory: "soups-stews",
+    mealPackage: "executive",
     galleryUrls: [],
     mealAddons: [
       { label: "Extra assorted meat", priceNgn: 2500 },
@@ -136,6 +141,7 @@ const listings = [
     imageUrl: null,
     amenities: ["Cold serve", "Pairs with meals", "Pickup available", "Dine-in ready"],
     mealCategory: "drinks",
+    mealPackage: null,
     galleryUrls: [],
     mealAddons: [],
   },
@@ -162,11 +168,11 @@ try {
       INSERT INTO reserve_listings (
         slug, title, type, location, short_description, description, price_ngn,
         billing_period, capacity, status, featured, image_tone, image_url, amenities,
-        meal_category, gallery_urls, meal_addons, updated_at
+        meal_category, meal_package, gallery_urls, meal_addons, updated_at
       )
       VALUES (
         $1,$2,$3,$4,$5,$6,$7,
-        $8,$9,$10,$11,$12,$13,$14,$15,$16,$17,NOW()
+        $8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,NOW()
       )
       ON CONFLICT (slug) DO UPDATE SET
         title = EXCLUDED.title,
@@ -183,6 +189,7 @@ try {
         image_url = EXCLUDED.image_url,
         amenities = EXCLUDED.amenities,
         meal_category = EXCLUDED.meal_category,
+        meal_package = EXCLUDED.meal_package,
         gallery_urls = EXCLUDED.gallery_urls,
         meal_addons = EXCLUDED.meal_addons,
         updated_at = NOW()
@@ -203,6 +210,7 @@ try {
         listing.imageUrl,
         listing.amenities,
         listing.mealCategory,
+        listing.mealPackage ?? null,
         listing.galleryUrls,
         JSON.stringify(listing.mealAddons),
       ],

@@ -51,6 +51,7 @@ export async function PATCH(
       image_url = ${listing.imageUrl},
       amenities = ${listing.amenities},
       meal_category = ${listing.mealCategory},
+      meal_package = ${listing.mealPackage},
       gallery_urls = ${listing.galleryUrls},
       meal_addons = ${JSON.stringify(listing.mealAddons)},
       updated_at = NOW()

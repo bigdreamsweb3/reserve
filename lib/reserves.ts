@@ -40,6 +40,7 @@ export type ReserveListing = {
   imageUrl: string | null;
   amenities: string[];
   mealCategory: string | null;
+  mealPackage: string | null;
   galleryUrls: string[];
   mealAddons: MealAddon[];
 };
@@ -80,6 +81,7 @@ export const sampleListings: ReserveListing[] = [
     imageUrl: null,
     amenities: ["Full kitchen", "Housekeeping", "24/7 power", "Parking"],
     mealCategory: null,
+    mealPackage: null,
     galleryUrls: [],
     mealAddons: [],
   },
@@ -101,6 +103,7 @@ export const sampleListings: ReserveListing[] = [
     imageUrl: null,
     amenities: ["Two bedrooms", "Dining area", "Fast Wi-Fi", "Laundry access"],
     mealCategory: null,
+    mealPackage: null,
     galleryUrls: [],
     mealAddons: [],
   },
@@ -122,6 +125,7 @@ export const sampleListings: ReserveListing[] = [
     imageUrl: null,
     amenities: ["Chicken option", "Plantain add-on", "Restaurant pickup", "Freshly prepared"],
     mealCategory: "rice-dishes",
+    mealPackage: "standard",
     galleryUrls: [],
     mealAddons: [
       { id: "extra-pepper", label: "Extra pepper", priceNgn: 0 },
@@ -147,6 +151,7 @@ export const sampleListings: ReserveListing[] = [
     imageUrl: null,
     amenities: ["Egg option", "Chicken option", "Quick prep", "Pickup available"],
     mealCategory: "noodles-pasta",
+    mealPackage: null,
     galleryUrls: [],
     mealAddons: [
       { id: "extra-egg", label: "Extra egg", priceNgn: 400 },
@@ -171,6 +176,7 @@ export const sampleListings: ReserveListing[] = [
     imageUrl: null,
     amenities: ["Swallow options", "Protein add-on", "Freshly made", "Restaurant service"],
     mealCategory: "soups-stews",
+    mealPackage: "executive",
     galleryUrls: [],
     mealAddons: [
       { id: "extra-meat", label: "Extra assorted meat", priceNgn: 2500 },
@@ -195,6 +201,7 @@ export const sampleListings: ReserveListing[] = [
     imageUrl: null,
     amenities: ["Cold serve", "Pairs with meals", "Pickup available", "Dine-in ready"],
     mealCategory: "drinks",
+    mealPackage: null,
     galleryUrls: [],
     mealAddons: [],
   },
@@ -273,6 +280,7 @@ function mapListing(row: Record<string, unknown>): ReserveListing {
     imageUrl: row.image_url ? String(row.image_url) : null,
     amenities: Array.isArray(row.amenities) ? (row.amenities as string[]) : [],
     mealCategory: row.meal_category != null && String(row.meal_category).trim() !== "" ? String(row.meal_category) : null,
+    mealPackage: row.meal_package != null && String(row.meal_package).trim() !== "" ? String(row.meal_package) : null,
     galleryUrls,
     mealAddons: parseMealAddons(row.meal_addons),
   };
@@ -342,6 +350,7 @@ export async function listReserveListings() {
         image_url,
         amenities,
         meal_category,
+        meal_package,
         gallery_urls,
         meal_addons
       FROM reserve_listings
@@ -384,6 +393,7 @@ export async function getReserveListingBySlug(slug: string) {
         image_url,
         amenities,
         meal_category,
+        meal_package,
         gallery_urls,
         meal_addons
       FROM reserve_listings
@@ -427,6 +437,7 @@ export async function getReserveListingById(id: string) {
         image_url,
         amenities,
         meal_category,
+        meal_package,
         gallery_urls,
         meal_addons
       FROM reserve_listings

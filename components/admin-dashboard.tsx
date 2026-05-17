@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState, useTransition } from "react";
 
-import { MEAL_CATEGORY_OPTIONS } from "@/lib/meal-categories";
+import { MEAL_CATEGORY_OPTIONS, MEAL_PACKAGE_OPTIONS, mealPackageLabel } from "@/lib/meal-categories";
 import type { ReserveBooking, ReserveListing, ReserveType } from "@/lib/reserves";
 import { formatNaira } from "@/lib/reserves";
 
@@ -30,6 +30,7 @@ type FormState = {
   imageUrl: string;
   amenities: string;
   mealCategory: string;
+  mealPackage: string;
   galleryUrls: string[];
   mealAddons: MealAddonFormRow[];
 };
@@ -54,6 +55,7 @@ function createEmptyForm(type: ReserveType): FormState {
       imageUrl: "",
       amenities: "Freshly made, Restaurant pickup",
       mealCategory: "rice-dishes",
+      mealPackage: "flexi",
       galleryUrls: [],
       mealAddons: [],
     };
@@ -75,6 +77,7 @@ function createEmptyForm(type: ReserveType): FormState {
     imageUrl: "",
     amenities: "Wi-Fi, Housekeeping",
     mealCategory: "",
+    mealPackage: "",
     galleryUrls: [],
     mealAddons: [],
   };
@@ -116,6 +119,8 @@ function buildPayload(form: FormState) {
 
   const mealCategory =
     form.type === "meal" && form.mealCategory.trim() ? form.mealCategory.trim() : null;
+  const mealPackage =
+    form.type === "meal" && form.mealPackage.trim() ? form.mealPackage.trim() : null;
 
   return {
     slug: form.slug.trim(),
@@ -133,6 +138,7 @@ function buildPayload(form: FormState) {
     imageUrl: form.imageUrl.trim() || null,
     amenities,
     mealCategory,
+    mealPackage,
     galleryUrls,
     mealAddons,
   };
@@ -204,6 +210,7 @@ export function AdminDashboard() {
       imageUrl: selectedListing.imageUrl ?? "",
       amenities: selectedListing.amenities.join(", "),
       mealCategory: selectedListing.mealCategory ?? "other",
+      mealPackage: selectedListing.mealPackage ?? "flexi",
       galleryUrls: [...selectedListing.galleryUrls],
       mealAddons: selectedListing.mealAddons.map((addon) => ({
         label: addon.label,
@@ -604,7 +611,10 @@ export function AdminDashboard() {
                                 {formatNaira(listing.priceNgn)} • {listing.location}
                               </p>
                               {listing.type === "meal" && listing.mealCategory ? (
-                                <p className="mt-1 text-xs text-[#8b532b]">{listing.mealCategory}</p>
+                                <p className="mt-1 text-xs text-[#8b532b]">
+                                  {listing.mealCategory}
+                                  {listing.mealPackage ? ` • ${mealPackageLabel(listing.mealPackage)}` : ""}
+                                </p>
                               ) : null}
                             </div>
                             <span
@@ -707,19 +717,34 @@ export function AdminDashboard() {
                   />
 
                   {form.type === "meal" ? (
-                    <select
-                      value={form.mealCategory}
-                      onChange={(event) =>
-                        setForm((current) => ({ ...current, mealCategory: event.target.value }))
-                      }
-                      className="admin-input rounded-2xl px-4 py-3 text-sm outline-none sm:col-span-2"
-                    >
-                      {MEAL_CATEGORY_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
+                    <>
+                      <select
+                        value={form.mealCategory}
+                        onChange={(event) =>
+                          setForm((current) => ({ ...current, mealCategory: event.target.value }))
+                        }
+                        className="admin-input rounded-2xl px-4 py-3 text-sm outline-none"
+                      >
+                        {MEAL_CATEGORY_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      <select
+                        value={form.mealPackage}
+                        onChange={(event) =>
+                          setForm((current) => ({ ...current, mealPackage: event.target.value }))
+                        }
+                        className="admin-input rounded-2xl px-4 py-3 text-sm outline-none"
+                      >
+                        {MEAL_PACKAGE_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </>
                   ) : null}
 
                   <input

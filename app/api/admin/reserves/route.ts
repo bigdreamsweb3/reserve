@@ -56,6 +56,7 @@ export async function POST(request: Request) {
       image_url,
       amenities,
       meal_category,
+      meal_package,
       gallery_urls,
       meal_addons,
       updated_at
@@ -75,6 +76,7 @@ export async function POST(request: Request) {
       ${listing.imageUrl},
       ${listing.amenities},
       ${listing.mealCategory},
+      ${listing.mealPackage},
       ${listing.galleryUrls},
       ${JSON.stringify(listing.mealAddons)},
       NOW()

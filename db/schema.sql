@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS reserve_listings (
   image_url TEXT,
   amenities TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
   meal_category TEXT,
+  meal_package TEXT,
   gallery_urls TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
   meal_addons JSONB NOT NULL DEFAULT '[]'::jsonb,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
