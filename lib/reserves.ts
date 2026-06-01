@@ -321,6 +321,20 @@ function isMissingColumnError(error: unknown) {
   );
 }
 
+function isConnectivityError(error: unknown) {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  const message = error.message.toLowerCase();
+  return (
+    message.includes("fetch failed") ||
+    message.includes("error connecting to database") ||
+    message.includes("connection") ||
+    message.includes("timeout")
+  );
+}
+
 function isSupportedType(value: unknown): value is ReserveType {
   return value === "apartment" || value === "meal";
 }
@@ -360,7 +374,7 @@ export async function listReserveListings() {
 
     return rows.filter((row) => isSupportedType(row.type)).map((row) => mapListing(row));
   } catch (error) {
-    if (isMissingRelationError(error) || isMissingColumnError(error)) {
+    if (isMissingRelationError(error) || isMissingColumnError(error) || isConnectivityError(error)) {
       return sampleListings;
     }
 
@@ -404,7 +418,7 @@ export async function getReserveListingBySlug(slug: string) {
 
     return rows[0] ? mapListing(rows[0]) : null;
   } catch (error) {
-    if (isMissingRelationError(error) || isMissingColumnError(error)) {
+    if (isMissingRelationError(error) || isMissingColumnError(error) || isConnectivityError(error)) {
       return sampleListings.find((listing) => listing.slug === slug) ?? null;
     }
 
@@ -448,7 +462,7 @@ export async function getReserveListingById(id: string) {
 
     return rows[0] ? mapListing(rows[0]) : null;
   } catch (error) {
-    if (isMissingRelationError(error) || isMissingColumnError(error)) {
+    if (isMissingRelationError(error) || isMissingColumnError(error) || isConnectivityError(error)) {
       return sampleListings.find((listing) => listing.id === id) ?? null;
     }
 
@@ -487,7 +501,7 @@ export async function listReserveBookings() {
 
     return rows.filter((row) => isSupportedType(row.listing_type)).map((row) => mapBooking(row));
   } catch (error) {
-    if (isMissingRelationError(error) || isMissingColumnError(error)) {
+    if (isMissingRelationError(error) || isMissingColumnError(error) || isConnectivityError(error)) {
       return [] as ReserveBooking[];
     }
 
@@ -527,7 +541,7 @@ export async function listReserveBookingsForUser(userId: string) {
 
     return rows.filter((row) => isSupportedType(row.listing_type)).map((row) => mapBooking(row));
   } catch (error) {
-    if (isMissingRelationError(error) || isMissingColumnError(error)) {
+    if (isMissingRelationError(error) || isMissingColumnError(error) || isConnectivityError(error)) {
       return [] as ReserveBooking[];
     }
 

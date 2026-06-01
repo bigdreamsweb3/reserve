@@ -10,11 +10,25 @@ export const navLinks = [
 
 export const heroStories = [
   {
-    src: "/reserve-happiness.png",
-    alt: "A happy Reserve guest with a plated meal in front of him.",
-    label: "Reserve Happiness",
-    title: "A Reserve meal should feel satisfying before the first bite.",
-    body: "This story slot is built to showcase real Reserve moments. Add more images later and they will appear here with the same status-style flow.",
+    src: "/celebrity_flex/reserve-x-blord.jpeg",
+    alt: "B-Lord visiting the Reserve building.",
+    label: "Visited Reserve",
+    title: "B-Lord",
+    body: "",
+  },
+  {
+    src: "/celebrity_flex/nuno-x-blord.jpeg",
+    alt: "B-Lord and Nuno Ziggy during a visit to Reserve.",
+    label: "Visited Reserve",
+    title: "B-Lord and Nuno Ziggy",
+    body: "",
+  },
+  {
+    src: "/celebrity_flex/blord-x-3men.jpeg",
+    alt: "Guests gathered with B-Lord at Reserve.",
+    label: "Visited Reserve",
+    title: "Reserve guests",
+    body: "",
   },
 ];
 

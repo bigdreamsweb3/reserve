@@ -12,12 +12,11 @@ export function HomeStoriesSection() {
             Reserve Stories
           </p>
           <h2 className="mt-4 max-w-md text-4xl font-black tracking-[-0.04em] sm:text-5xl">
-            Moments from the kitchen, the table, and the stay.
+            Familiar faces and real moments at Reserve.
           </h2>
           <p className="mt-5 max-w-md text-sm leading-7 text-white/76">
-            The story viewer stays on the homepage, but outside the hero. It can expand
-            fullscreen, support more images later, and grow into videos and multiple story
-            views.
+            Visits from inside the Reserve building, shared beside the food and apartment
+            experience guests come for.
           </p>
 
           <div className="mt-8 rounded-[1.8rem] bg-white/8 p-5 ring-1 ring-white/12">

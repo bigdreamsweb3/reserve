@@ -149,6 +149,7 @@ export function AdminDashboard() {
   const [listings, setListings] = useState<ReserveListing[]>([]);
   const [bookings, setBookings] = useState<ReserveBooking[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [activeView, setActiveView] = useState<AdminView>("overview");
   const [form, setForm] = useState<FormState>(createEmptyForm("apartment"));
   const [message, setMessage] = useState("");
@@ -193,6 +194,7 @@ export function AdminDashboard() {
       return;
     }
 
+    setIsEditorOpen(true);
     setActiveView(selectedListing.type === "meal" ? "meals" : "apartments");
     setForm({
       slug: selectedListing.slug,
@@ -364,6 +366,7 @@ export function AdminDashboard() {
                   onClick={() => {
                     setActiveView(item.id);
                     setSelectedId(null);
+                    setIsEditorOpen(false);
                     if (item.id === "apartments") {
                       setForm(createEmptyForm("apartment"));
                     } else if (item.id === "meals") {
@@ -429,14 +432,15 @@ export function AdminDashboard() {
                   <p className="mt-3 text-sm leading-7 text-[var(--ink-soft)]">
                     Upload a hero image plus additional angles so guests can swipe through the room before they book.
                   </p>
-                  <button
-                    type="button"
-                    className="accent-button mt-5 rounded-full px-5 py-2.5 text-sm font-semibold"
-                    onClick={() => {
-                      setActiveView("apartments");
-                      resetForm("apartment");
-                    }}
-                  >
+                    <button
+                      type="button"
+                      className="accent-button mt-5 rounded-full px-5 py-2.5 text-sm font-semibold"
+                      onClick={() => {
+                        setActiveView("apartments");
+                        resetForm("apartment");
+                        setIsEditorOpen(true);
+                      }}
+                    >
                     Go to apartments
                   </button>
                 </div>
@@ -446,14 +450,15 @@ export function AdminDashboard() {
                     Group fried rice with jollof, expose drinks separately, and attach optional extras like “extra
                     pepper” with prices.
                   </p>
-                  <button
-                    type="button"
-                    className="accent-button mt-5 rounded-full px-5 py-2.5 text-sm font-semibold"
-                    onClick={() => {
-                      setActiveView("meals");
-                      resetForm("meal");
-                    }}
-                  >
+                    <button
+                      type="button"
+                      className="accent-button mt-5 rounded-full px-5 py-2.5 text-sm font-semibold"
+                      onClick={() => {
+                        setActiveView("meals");
+                        resetForm("meal");
+                        setIsEditorOpen(true);
+                      }}
+                    >
                     Go to meals
                   </button>
                 </div>
@@ -572,8 +577,9 @@ export function AdminDashboard() {
           ) : null}
 
           {listingPanel ? (
-            <div className="mx-auto grid max-w-6xl gap-8 xl:grid-cols-[0.95fr_1.25fr]">
-              <section className="space-y-4">
+            <div className="mx-auto max-w-6xl">
+              {!isEditorOpen ? (
+                <section className="space-y-4">
                 <div className="admin-panel rounded-[1.75rem] p-6">
                   <div className="flex items-center justify-between gap-4">
                     <div>
@@ -585,7 +591,11 @@ export function AdminDashboard() {
                     <button
                       type="button"
                       className="surface-chip rounded-full px-4 py-2 text-sm font-semibold"
-                      onClick={() => resetForm(listingPanel.type)}
+                      onClick={() => {
+                        resetForm(listingPanel.type);
+                        setIsEditorOpen(true);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
                     >
                       {listingPanel.newLabel}
                     </button>
@@ -602,7 +612,11 @@ export function AdminDashboard() {
                         >
                           <button
                             type="button"
-                            onClick={() => setSelectedId(listing.id)}
+                            onClick={() => {
+                              setSelectedId(listing.id);
+                              setIsEditorOpen(true);
+                              window.scrollTo({ top: 0, behavior: "smooth" });
+                            }}
                             className="flex flex-1 items-start justify-between text-left"
                           >
                             <div>
@@ -664,9 +678,21 @@ export function AdminDashboard() {
                   </div>
                 </div>
               </section>
+              ) : null}
 
-              <section className="admin-panel rounded-[1.75rem] p-6 sm:p-8">
+              {isEditorOpen ? (
+                <section className="admin-panel rounded-[1.75rem] p-6 sm:p-8">
                 <div className="mb-6">
+                  <button
+                    type="button"
+                    className="surface-chip mb-4 rounded-full px-4 py-2 text-xs font-semibold"
+                    onClick={() => {
+                      setIsEditorOpen(false);
+                      setMessage("");
+                    }}
+                  >
+                    Back to {listingPanel.title.toLowerCase()} list
+                  </button>
                   <p className="eyebrow">{form.type === "meal" ? "Meal editor" : "Apartment editor"}</p>
                   <h2 className="mt-3 font-[family-name:var(--font-heading)] text-3xl text-[var(--ink)]">
                     {selectedId
@@ -1091,6 +1117,7 @@ export function AdminDashboard() {
                   <p className="text-sm text-[var(--ink-soft)]">{message}</p>
                 </div>
               </section>
+              ) : null}
             </div>
           ) : null}
         </div>

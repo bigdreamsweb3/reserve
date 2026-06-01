@@ -181,9 +181,11 @@ export function HeroStories({ stories }: HeroStoriesProps) {
             <h3 className="mt-3 font-[family-name:var(--font-heading)] text-3xl leading-none text-white sm:text-4xl">
               {activeStory.title}
             </h3>
-            <p className="text-hero-soft mt-3 max-w-md text-sm leading-7">
-              {activeStory.body}
-            </p>
+            {activeStory.body ? (
+              <p className="text-hero-soft mt-3 max-w-md text-sm leading-7">
+                {activeStory.body}
+              </p>
+            ) : null}
           </div>
         </div>
       </div>
